@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+</head>
+
+<body>
+    <h1>Hello World</h1>
+    <!-- Ctrl + / -->
+
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Text</label>
+        <input type="text" class="form-control" id="txtText" placeholder="Enter text...">
+    </div>
+
+    <!-- <input type="text" id="txtText" /> -->
+    <button type="button" onclick="test()">Test</button>
+    <button type="button" id="btnTest2">Test2</button>
+    <button type="button" class="btn btn-success" id="btnSave">Save</button>
+    <button type="button" class="btn btn-danger" id="btnDelete">Delete</button>
+
+    <script src="plugins/jquery-3.7.1.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // var 
+        // const
+        // let
+        function test() {
+            // let text = document.getElementById('txtText').value;
+            let text = $('#txtText').val();
+            alert("Hello World, " + text);
+        }
+
+        $('#btnTest2').click(function () {
+            let text = $('#txtText').val();
+            alert("Hello World, " + text);
+        })
+
+        $('#btnSave').click(function () {
+            let text = $('#txtText').val();
+            localStorage.setItem("Name", text);
+            alert("Saving Successful");
+            $('#txtText').val('');
+            $('#txtText').focus();
+        })
+
+        $('#btnDelete').click(function () {
+            const result = confirm('Are you sure want to delte?');
+            if(result){
+                localStorage.removeItem("Name");
+            }
+        })
+    </script>
+</body>
+
+</html>
