@@ -164,7 +164,7 @@
                 rows += `<tr>
                             <td>
                                 <button data-blog-id="${item.Id}" type="button" class="btn btn-warning btn-edit">Edit</button>
-                                <button type="button" class="btn btn-danger">Delete</button>
+                                <button data-id="${item.Id}" type="button" class="btn btn-danger btn-delete">Delete</button>
                             </td>
                             <th scope="row">${i + 1}</th>
                             <td>${item.Title}</td>
@@ -175,8 +175,28 @@
 
             $('#tbData').html(rows);
             bindEdit();
+            bindDelete();
         }
 
+        function bindDelete() {
+            $('.btn-delete').click(function () {
+                let isConfirm = confirm('Are you sure want to delete?');
+
+                if (!isConfirm) return;
+
+                const id = $(this).data('id');
+                let lst = getBlogs();
+                let blogs = lst.filter(x => x.Id != id);
+
+                let jsonStr = JSON.stringify(blogs);
+
+                localStorage.setItem('blogs', jsonStr);
+                clearControls();
+                loadData();
+            })
+        }
+
+        let editId = null;
         function bindEdit() {
             $('.btn-edit').click(function () {
                 // alert('edit click');
@@ -194,6 +214,7 @@
                 const item = result[0];
                 console.log(item);
 
+                editId = item.Id;
                 $('#txtTitle').val(item.Title);
                 $('#txtAuthor').val(item.Author);
                 $('#txtContent').val(item.Content);
@@ -222,6 +243,22 @@
             const author = $('#txtAuthor').val();
             const content = $('#txtContent').val();
 
+            if(title == null || title == ""){
+                alert('Please enter title.');
+                $('#txtTitle').focus();
+                return;
+            }
+            if(author == null || author == ""){
+                alert('Please enter author.');
+                $('#txtAuthor').focus();
+                return;
+            }
+            if(content == null || content == ""){
+                alert('Please enter content.');
+                $('#txtContent').focus();
+                return;
+            }
+
             // check data from local storage
             let blogDb = localStorage.getItem('blogs');
             let blogs = [];
@@ -232,20 +269,31 @@
                 blogs = JSON.parse(blogDb); // [], {}
             }
 
-            // insert data
-            let id = generateUUID();
-            let blogItem = {
-                Id: id,
-                Title: title,
-                Author: author,
-                Content: content
-            };
-            blogs.push(blogItem);
+            if (editId == null) {
+                // insert data
+                let id = generateUUID();
+                let blogItem = {
+                    Id: id,
+                    Title: title,
+                    Author: author,
+                    Content: content
+                };
+                blogs.push(blogItem);
+            }
+            else {
+                let index = blogs.findIndex(x => x.Id == editId);
+                console.log(index);
+                blogs[index].Title = title;
+                blogs[index].Author = author;
+                blogs[index].Content = content;
+            }
 
+            editId = null;
             let jsonStr = JSON.stringify(blogs);
 
             localStorage.setItem('blogs', jsonStr);
             clearControls();
+            loadData();
         })
 
         function clearControls() {

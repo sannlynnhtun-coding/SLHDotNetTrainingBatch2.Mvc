@@ -6,4 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Ulid" Version="1.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SLHDotNetTrainingBatch2.Database\SLHDotNetTrainingBatch2.Database.csproj" />
+  </ItemGroup>
+
 </Project>
