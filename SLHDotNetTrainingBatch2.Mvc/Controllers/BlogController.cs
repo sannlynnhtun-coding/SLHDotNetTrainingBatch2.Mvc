@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SLHDotNetTrainingBatch2.Database.AppDbContextModels;
+using SLHDotNetTrainingBatch2.Mvc.Models;
+using System.Threading.Tasks;
 
 namespace SLHDotNetTrainingBatch2.Mvc.Controllers
 {
@@ -18,7 +20,9 @@ namespace SLHDotNetTrainingBatch2.Mvc.Controllers
         [ActionName("Index")]
         public async Task<IActionResult> BlogIndex()
         {
-            var lst = await _db.TblBlogs.ToListAsync();
+            var lst = await _db.TblBlogs
+                .OrderByDescending(x => x.BlogId)
+                .ToListAsync();
             return View("BlogIndex", lst);
 
             //var model = new BlogResponseModel
@@ -49,6 +53,46 @@ namespace SLHDotNetTrainingBatch2.Mvc.Controllers
                 await _db.SaveChangesAsync();
             }
             return RedirectToAction("Index");
+        }
+
+        [ActionName("Create")]
+        public IActionResult BlogCreate()
+        {
+            return View("BlogCreate");
+        }
+
+        [ActionName("Save")]
+        public async Task<IActionResult> BlogSave(BlogCreateRequestModel requestModel)
+        {
+            await _db.TblBlogs.AddAsync(new TblBlog
+            {
+                BlogId = Ulid.NewUlid().ToString(),
+                BlogTitle = requestModel.Title,
+                BlogAuthor = requestModel.Author,
+                BlogContent = requestModel.Content,
+                CreatedBy = "Admin",
+                CreatedDateTime = DateTime.Now,
+                DeleteFlag = false
+            });
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        [ActionName("Edit")]
+        public async Task<IActionResult> BlogEdit(string id)
+        {
+            var item = await _db.TblBlogs.FirstOrDefaultAsync(x => x.BlogId == id);
+            if (item == null)
+                return RedirectToAction("Index");
+
+            var model = new BlogEditRequestModel
+            {
+                BlogId = item.BlogId,
+                Title = item.BlogTitle,
+                Author = item.BlogAuthor,
+                Content = item.BlogContent
+            };
+            return View("BlogEdit", model);
         }
     }
 
