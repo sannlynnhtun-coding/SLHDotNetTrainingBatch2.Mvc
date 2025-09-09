@@ -17,6 +17,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<TblBlog> TblBlogs { get; set; }
 
+    public virtual DbSet<TblCategory> TblCategories { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TblBlog>(entity =>
@@ -38,6 +40,23 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.ModifiedDateTime).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<TblCategory>(entity =>
+        {
+            entity.HasKey(e => e.CategoryId);
+
+            entity.ToTable("Tbl_Category");
+
+            entity.Property(e => e.CategoryId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CategoryCode)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CategoryName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         OnModelCreatingPartial(modelBuilder);

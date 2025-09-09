@@ -1,0 +1,55 @@
+﻿<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Category Id</th>
+            <th>Category Code</th>
+            <th>Category Name</th>
+        </tr>
+    </thead>
+    <tbody id="tbData">
+    </tbody>
+</table>
+
+@* <script>
+    console.log("page hello");
+</script> *@
+
+@section scripts {
+    <script>
+        // console.log("section script hello");
+
+        loadData();
+
+        function loadData(){
+            $.ajax({
+                url: "/Category/List",
+                type: "GET",
+                success: function (response) {
+                    console.log({response});
+
+                    let trRow = '';
+                    for (let i = 0; i < response.length; i++) {
+                        let row = `<tr>
+                            <td>${i + 1}</td>
+                            <td>${response[i].CategoryId}</td>
+                            <td>${response[i].CategoryCode}</td>
+                            <td>${response[i].CategoryName}</td>
+                        </tr>`;
+                        trRow += row;
+                    }
+                    $("#tbData").html(trRow);
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+    </script>
+}
+
+@section header {
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Test</a>
+    </li>
+}
