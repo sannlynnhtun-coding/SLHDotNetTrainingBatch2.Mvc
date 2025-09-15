@@ -1,0 +1,43 @@
+﻿<div class="mb-3">
+	<label for="txtCategoryCode" class="form-label">Category Code</label>
+	<input type="text" class="form-control" id="txtCategoryCode">
+</div>
+<div class="mb-3">
+	<label for="txtCategoryName" class="form-label">Category Name</label>
+	<input type="text" class="form-control" id="txtCategoryName">
+</div>
+<button class="btn btn-dark" type="button" id="btnCancel">Cancel</button>
+<button class="btn btn-success" type="submit" id="btnSave">Save</button>
+
+@section scripts {
+	<script>
+		$('#btnSave').click(function(){
+			const code = $('#txtCategoryCode').val();
+			const name = $('#txtCategoryName').val();
+
+			let _requestModel = {
+				CategoryCode: code,
+				CategoryName: name
+			};
+
+			$.ajax({
+				url: "/Category/Save",
+				type: "POST",
+				data: { requestModel : _requestModel },
+				success: function (response) {
+					console.log({response});
+					if(!response.IsSuccess){
+						alert(response.Message);
+						return;
+					}
+
+					alert(response.Message);
+					location.href = "/category";
+				},
+				error: function (request, status, error) {
+					alert(request.responseText);
+				}
+			});
+		})
+	</script>
+}
