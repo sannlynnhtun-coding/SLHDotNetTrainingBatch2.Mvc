@@ -69,6 +69,64 @@ namespace SLHDotNetTrainingBatch2.Mvc.Controllers
             };
             return Json(model);
         }
+
+        [HttpGet]
+        [ActionName("Edit")]
+        public async Task<IActionResult> CategoryEditAsync(string id)
+        {
+            var category = await _db.TblCategories.FirstOrDefaultAsync(x => x.CategoryId == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            var model = new CategoryViewModel
+            {
+                CategoryId = category.CategoryId,
+                CategoryCode = category.CategoryCode,
+                CategoryName = category.CategoryName
+            };
+            return View("CategoryEdit", model);
+        }
+
+        [HttpPost]
+        [ActionName("Update")]
+        public async Task<IActionResult> CategoryUpdateAsync(CategoryViewModel requestModel)
+        {
+            var category = await _db.TblCategories.FirstOrDefaultAsync(x => x.CategoryId == requestModel.CategoryId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            category.CategoryCode = requestModel.CategoryCode;
+            category.CategoryName = requestModel.CategoryName;
+            var result = await _db.SaveChangesAsync();
+            var model = new CategoryViewResponseModel
+            {
+                IsSuccess = result > 0,
+                Message = result > 0 ? "Updating Successful" : "Updating Failed"
+            };
+            return Json(model);
+        }
+
+        [HttpDelete]
+        [ActionName("Delete")]
+        public async Task<IActionResult> CategoryDeleteAsync(string id)
+        {
+            var category = await _db.TblCategories.FirstOrDefaultAsync(x => x.CategoryId == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            _db.TblCategories.Remove(category);
+            var result = await _db.SaveChangesAsync();
+            var model = new CategoryViewResponseModel
+            {
+                IsSuccess = result > 0,
+                Message = result > 0 ? "Deleting Successful" : "Deleting Failed"
+            };
+            return Json(model);
+        }
+
     }
 
     public class CategoryViewModel
